@@ -1,70 +1,144 @@
-#include <stdlib.h>
-#include <cstdio>
-#include <stdexcept>
+#include<cstdio>
+#include<stdlib.h>
+#include<stdexcept>
+
+class Menu{
+    public:
+        void print(){
+            system("CLS");
+            printf("[1] - Insert an element\n");
+            printf("[2] - Insert an element at certain position\n");
+            printf("[3] - Print the entire list\n");
+            printf("[4] - Delete an element at certain position\n");
+            printf("[5] - Reverse the entire list\n");
+            printf("[6] - Exit\n");
+        }
+};
 
 class Node{
     public:
         int data;
-        Node *next;
+        Node * next;
 };
 
 class LinkedList{
-    Node *head = NULL;
-
     public:
-        void insert(int x){
-            Node *temp = new Node();
-            temp->data = x;
-            temp->next = head;
-            head = temp;
-        }
-        int length(){
-            Node *temp = head;
-            int i = 0;
-            while(temp != NULL){
-                i = i+1;
-                temp = temp->next;
-            }
-            return i;
-        }
+        Node *head = nullptr;
         void print(){
             Node *temp = head;
-            while(temp != NULL){
+            while (temp != NULL)
+            {
                 printf(" %d ",temp->data);
                 temp = temp->next;
             }
             printf("\n");
         }
-        void insertIn(int data, int position){
-            if(position > length())  throw std::runtime_error{"The given position is over the list length"};
-            Node *temp1 = new Node();
-            temp1->data = data;
-            temp1->next = nullptr;
+
+        void insert(int data){
+            Node *node = new Node();
+            node->data = data;
+            node->next = head;
+            head = node;
+        }
+
+        void insertAt(int data, int position){
+            Node *temp = head;
+            Node *node = new Node();
+            node->data = data;
+            node->next = nullptr;
+
             if(position == 1){
-                temp1->next = head;
-                head = temp1;
+                node->next = head;
+                head = node;
                 return;
             }
-            Node *temp2 = head;
-            for(int i = 0; i < position-2;i++){
-                temp2 = temp2->next;
+            for (size_t i = 0; i < position - 2; i++)
+            {
+                temp = temp->next;
             }
-            temp1->next = temp2->next;
-            temp2->next = temp1;
+            node->next = temp->next;
+            temp->next = node;
+        }
+
+        void deleteElement(int position){
+            Node *node = head;
+            if(position == 1){
+                head = node->next;
+                delete node;
+                return;
+            }
+            for (size_t i = 0; i < position-2; i++)
+            {
+                node = node->next;
+            }
+            Node *temp = node->next; 
+            node->next = temp->next;
+            delete temp;
+        }
+        void reverseList(){
+            Node *next,*prev,*current = nullptr;
+            current = head;
+            prev = nullptr;
+            while(current != NULL)
+            {
+                next = current->next;
+                current->next = prev;
+                prev = current;
+                current = next;
+            }
+            head = prev;
         }
 };
 
 int main(){
-    LinkedList list;
-    printf("How many numbers: ");
-    int n,x,i,pos;
-    scanf("%d",&n);
-    for(i = 0;i < n;i++){
-        printf("Enter the number: ");
-        scanf("%d",&x);
-        printf("Enter the position: ");
-        scanf("%d",&pos);
-        list.insertIn(x,pos);
-        list.print();
-    }
+    char res[1];
+    int opt,x,pos;
+    Menu myMenu;
+    LinkedList myList;
+    
+    do{
+        myMenu.print();
+
+        printf("\n\n\nChoice the operation:");
+        scanf("%d",&opt);
+        system("cls");
+        switch (opt)
+        {
+        case 1:
+            printf("Insert the new value on the list:");
+            scanf("%d",&x);
+            myList.insert(x);
+            break;
+        case 2:
+            printf("Insert the new value on the list:");
+            scanf("%d",&x);
+            printf("Insert the position:");
+            scanf("%d",&pos);
+            myList.insertAt(x,pos);
+            break;
+        case 3:
+            printf("Printing all the elemetns\n");
+            myList.print();
+            break;
+        case 4:
+            printf("Deleting an Element into the list\n");
+            printf("Insert the position:");
+            scanf("%d",&pos);
+            myList.deleteElement(pos);
+            break;
+        case 5:
+            printf("Reversing the list...\n");
+            myList.reverseList();
+            myList.print();
+            break;
+        case 6:
+            break;
+        default:
+            break;
+        }
+
+    printf("Would you like to do another operation? [y/n] :");
+    scanf("%s",&res);
+    }while (res[0]=='y');
+    
 }

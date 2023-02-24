@@ -88,4 +88,3 @@ int main(){
     myList.reversePrint();
     myList.insertAtTail(100);
     myList.print();
-}
